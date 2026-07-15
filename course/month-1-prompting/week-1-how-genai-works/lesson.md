@@ -148,3 +148,225 @@ The model is a prediction engine. Your job is to constrain the prediction space 
 - Context window is shared between input and output — budget accordingly
 - Temperature is your creativity dial — default to 0.7, adjust as needed
 - Structure beats length — a precise 50-word prompt often beats a rambling 500-word one
+
+---
+
+## Common Pitfalls
+
+### Pitfall 1: The "More Words = Better" Trap
+**What happens:** Students write long, rambling prompts hoping more context helps.
+**Reality:** Extra words dilute your signal. The model has to sift through noise.
+**Fix:** Write your prompt, then cut it in half. Remove every word that doesn't change the output.
+
+### Pitfall 2: Assuming the Model "Knows" You
+**What happens:** "Fix this code" (no code provided, no language specified, no error described).
+**Reality:** The model has zero context about your situation unless you provide it.
+**Fix:** Always include: what you have, what you want, what's going wrong.
+
+### Pitfall 3: Ignoring Output Format
+**What happens:** Students ask for "analysis" and get a wall of text.
+**Reality:** If you don't specify format, the model picks one (usually a paragraph).
+**Fix:** Explicitly request: "Return as JSON", "Use bullet points", "Format as a table".
+
+### Pitfall 4: Temperature Confusion
+**What happens:** Students set temperature to 1.5 for factual queries, then complain about hallucinations.
+**Reality:** High temperature = more randomness = more hallucination risk.
+**Fix:** Match temperature to task. Factual = 0-0.3. Creative = 0.7-1.0.
+
+### Pitfall 5: Forgetting Token Limits in Responses
+**What happens:** "Summarize this 10-page document" → response cuts off at page 3.
+**Reality:** The model ran out of output tokens.
+**Fix:** Specify length: "Summarize in 200 words" or "Give me 5 bullet points".
+
+---
+
+## Interactive Exercises
+
+### Exercise 1: Token Budget Challenge
+**Goal:** Understand how prompts consume context window.
+
+1. Open an AI tool with token counting (ChatGPT, Claude, etc.)
+2. Start with this prompt: "Explain photosynthesis."
+3. Note the token count.
+4. Rewrite it as: "You are a biology teacher explaining to a 10-year-old. Explain photosynthesis in 3 sentences using a food analogy."
+5. Compare token counts. Did the more specific prompt use more or fewer tokens?
+6. Which output was more useful?
+
+### Exercise 2: Temperature Ladder
+**Goal:** See how temperature changes output.
+
+Use this prompt at temperatures 0, 0.5, 1.0, 1.5:
+"Write a product tagline for noise-canceling headphones."
+
+Record:
+- Which version is most professional?
+- Which is most creative?
+- Which would you actually use in marketing?
+
+### Exercise 3: Prompt Autopsy
+**Goal:** Learn from bad prompts.
+
+Here's a vague prompt that failed:
+"Write something about dogs."
+
+Analyze it:
+1. What's missing? (audience, format, tone, length, specific topic)
+2. Rewrite it 3 different ways for 3 different audiences (kids, vets, pet store owners)
+3. Test all 3. Compare the outputs.
+
+### Exercise 4: Context Window Stress Test
+**Goal:** Experience token limits firsthand.
+
+1. Paste a long article (1,000+ words) into your AI tool
+2. Ask: "Summarize this." → Note where it stops
+3. Ask: "Summarize this in exactly 3 bullet points, each under 10 words." → Compare
+4. Discuss: Why did the second version give you more control?
+
+---
+
+## Real-World Scenarios
+
+### Scenario 1: Customer Support Bot
+**Challenge:** Auto-reply to customer complaints.
+**Bad prompt:** "Respond to this customer."
+**Good prompt:** "You are a friendly customer support agent for a SaaS company. The customer is frustrated because their export feature stopped working. Acknowledge their frustration, apologize, and provide 2 troubleshooting steps. Keep response under 100 words. Tone: empathetic but professional."
+
+### Scenario 2: Code Review
+**Challenge:** Review Python code for issues.
+**Bad prompt:** "Review this code."
+**Good prompt:** "You are a senior Python developer. Review the following code for: bugs, performance issues, style violations. Return findings as a numbered list with severity (critical/warning/info). Code:\n```python\n[PASTE CODE]\n```"
+
+### Scenario 3: Content Creation
+**Challenge:** Write social media posts.
+**Bad prompt:** "Write a tweet about our product."
+**Good prompt:** "Write 3 tweet options for launching a new project management tool. Each tweet should: be under 280 characters, include one benefit (save time, reduce meetings, or improve accountability), use a casual tone, and end with a call-to-action. Vary the styles: one question, one stat, one story."
+
+### Scenario 4: Data Extraction
+**Challenge:** Pull structured data from unstructured text.
+**Bad prompt:** "Extract info from this email."
+**Good prompt:** "Extract the following fields from this email and return as JSON: sender_name, company, meeting_date, meeting_time, agenda_items (array). If a field is missing, set it to null. Email:\n[PASTE EMAIL]"
+
+---
+
+## Quick Reference Cheat Sheet
+
+### Prompt Building Blocks
+
+| Component | Purpose | Example |
+|-----------|---------|---------|
+| **Role** | Sets expertise/perspective | "You are a financial analyst" |
+| **Task** | Defines what to do | "Analyze this quarterly report" |
+| **Format** | Controls output structure | "Return as a markdown table" |
+| **Constraints** | Sets boundaries | "Under 200 words" |
+| **Examples** | Shows desired pattern | "Like this: [example]" |
+| **Tone** | Sets communication style | "Formal and professional" |
+| **Audience** | Who it's for | "Explain to a non-technical manager" |
+
+### Temperature Quick Guide
+
+| Task Type | Temperature | Why |
+|-----------|-------------|-----|
+| Factual Q&A | 0-0.2 | Accuracy matters most |
+| Code generation | 0-0.3 | Correctness over creativity |
+| Summarization | 0.3-0.5 | Fidelity to source |
+| Business writing | 0.5-0.7 | Balance of formality and flow |
+| Creative writing | 0.7-1.0 | Exploration and variety |
+| Brainstorming | 0.8-1.2 | Maximum idea diversity |
+
+### Token Estimation Formula
+
+```
+English words × 1.3 = approximate tokens
+Characters ÷ 4 = approximate tokens
+```
+
+**Examples:**
+- 100 words ≈ 130 tokens
+- 500 words ≈ 650 tokens
+- 1,000 words ≈ 1,300 tokens
+
+---
+
+## Discussion Questions
+
+1. **If a model predicts the next word, how can it write code it's never seen before?**
+   → It's not "writing" — it's predicting patterns it learned from billions of code examples during training.
+
+2. **Why might two identical prompts give different results?**
+   → Temperature, different model versions, server load, or randomness in sampling. Even at temperature 0, some systems add micro-variation.
+
+3. **When would you use a system message vs. just putting everything in the user message?**
+   → System messages persist across conversation turns. Use them for rules/persona that should always apply. User messages are one-time requests.
+
+4. **What happens when you hit the context window limit mid-conversation?**
+   → The model "forgets" the earliest messages. Solutions: summarize history, start new conversation, or use models with larger context windows.
+
+5. **Can a model know when it's wrong?**
+   → Generally no. It predicts likely tokens, not "true" tokens. It may express uncertainty ("I'm not sure, but...") if trained to, but it doesn't actually know.
+
+---
+
+## Hands-On Lab Ideas
+
+### Lab 1: Build a Prompt Library
+Create 5 reusable prompt templates for common tasks:
+1. Email writer
+2. Code reviewer
+3. Meeting summarizer
+4. Data extractor
+5. Creative brainstormer
+
+For each, include: role, task, format, constraints, and one example.
+
+### Lab 2: A/B Test Your Prompts
+Pick a task. Write two versions of the prompt (vague vs. structured). Test both 3 times. Score each output on:
+- Accuracy (0-5)
+- Usefulness (0-5)
+- Conciseness (0-5)
+
+Calculate average scores. Which prompt won?
+
+### Lab 3: Token Optimization Challenge
+Take this bloated prompt and reduce its token count by 50% while keeping the output quality:
+
+> "I would like you to please help me by writing a professional and well-crafted email that is directed toward a potential business partner who might be interested in collaborating with our company on a joint marketing initiative that we believe could be mutually beneficial for both parties involved. The email should be friendly but professional in tone and should clearly explain what we are proposing and why it would be advantageous for them to work with us on this particular project."
+
+### Lab 4: Error Recovery
+Use a deliberately bad prompt and iteratively improve it:
+1. Start with: "Make a thing."
+2. Note the useless output.
+3. Add one constraint. Re-test.
+4. Keep adding constraints until the output is what you wanted.
+5. Document what each constraint changed.
+
+---
+
+## Glossary
+
+| Term | Definition |
+|------|------------|
+| **Token** | The smallest unit a model processes; roughly 0.75 words or 4 characters |
+| **Context Window** | Total tokens the model can see (prompt + response combined) |
+| **Temperature** | Controls randomness; 0 = deterministic, 2 = maximum randomness |
+| **Top-p** | Filters tokens by cumulative probability threshold |
+| **System Message** | High-priority instructions that set model behavior/persona |
+| **Hallucination** | When the model generates confident but factually incorrect information |
+| **Prompt** | The text input you send to the model to guide its output |
+| **Inference** | The act of the model generating a response from a prompt |
+| **Fine-tuning** | Additional training on specific data to customize model behavior |
+| **Few-shot** | Including examples in your prompt to guide the model's output format |
+| **Zero-shot** | Prompting without examples; relying on the model's pre-trained knowledge |
+| **API** | Application Programming Interface; how you programmatically talk to models |
+
+---
+
+## Further Reading
+
+- OpenAI Tokenizer: https://platform.openai.com/tokenizer
+- Anthropic Prompt Engineering Guide: https://docs.anthropic.com/claude/docs/prompt-engineering
+- Google AI Prompt Design: https://ai.google.dev/docs/prompt_best_practices
+- "Prompt Engineering Guide" (DAIR.AI): https://www.promptingguide.ai
+
+---
+
+*End of Week 1 Lesson — Continue to the Lab and Assignment for hands-on practice.*
