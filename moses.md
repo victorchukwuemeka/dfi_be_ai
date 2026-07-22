@@ -12,3 +12,8 @@ Structure your response as:
 
 ## Timeline
 [When to do each action]
+
+
+
+Format as a markdown table with columns:
+| Category | Finding | Severity | Recommendation |
